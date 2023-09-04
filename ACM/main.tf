@@ -1,11 +1,11 @@
 resource "aws_acm_certificate" "domain-cert" {
-  domain_name                       = "api.ashata.online"
-  validation_method                 = "DNS"
+  domain_name                       =  var.domain-name
+  validation_method                 =  var.validation-method
 }
 
 data "aws_route53_zone" "hosted-zone" {
-  name                              = "ashata.online"
-private_zone                        = false
+  name                              = var.existing-public-route53-zone-name
+  private_zone                      = false
 }
 
 resource "aws_route53_record" "validation-record" {
@@ -16,8 +16,8 @@ resource "aws_route53_record" "validation-record" {
     type                            = dvo.resource_record_type
     }
   }
-
-  allow_overwrite = false
+#Allows terraform to override the route53 existing records
+  allow_overwrite = var.allow-overwrite
 name                                = each.value.name
 records                             = [each.value.record]
 ttl                                 = 60

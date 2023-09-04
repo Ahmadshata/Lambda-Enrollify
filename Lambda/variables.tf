@@ -10,7 +10,7 @@ variable "sender-fun-name" {
   type = string
 }
 
-variable "secrets-manager" {
+variable "secret-arn" {
   type = string
 }
 
@@ -39,5 +39,13 @@ variable "sender-email" {
 }
 
 variable "receiver-email" {
+  type = string
+}
+
+variable "function-runtime" {
+  type = string
+}
+
+variable "CW-logs-retention-days" {
   type = string
 }

@@ -1,10 +1,10 @@
 resource "aws_dynamodb_table" "enrollment" {
-  name                        = "enrollment"
-  billing_mode                = "PAY_PER_REQUEST"
-  hash_key                    = "id"
+  name                        = var.table-name
+  billing_mode                = var.billing-mode
+  hash_key                    = var.partition-key
 
   attribute {
-    name                      = "id"
-    type                      = "S"
+    name                      = var.partition-key
+    type                      = var.key-data-type
   }
 }

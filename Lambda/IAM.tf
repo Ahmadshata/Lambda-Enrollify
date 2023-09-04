@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "sender-auth-role" {
-  name                    = "sender-auth-role"
+  name                    = "${var.sender-fun-name}-${var.auth-fun-name}-role"
   assume_role_policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -15,7 +15,7 @@ resource "aws_iam_role" "sender-auth-role" {
 }
 
 resource "aws_iam_role" "manipulator-role" {
-  name                    = "manipulator-role"
+  name                    = "${var.manipulator-fun-name}-role"
   assume_role_policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -29,7 +29,7 @@ resource "aws_iam_role" "manipulator-role" {
 }
 
 resource "aws_iam_policy" "lambda-sender-authorizer" {
-  name                    = "lambda-sender-authorizer-policy"
+  name                    = "${var.sender-fun-name}-${var.auth-fun-name}-policy"
   policy                  = jsonencode(
         {
         "Version": "2012-10-17",
@@ -38,7 +38,7 @@ resource "aws_iam_policy" "lambda-sender-authorizer" {
                         "Sid": "VisualEditor0",
                         "Effect": "Allow",
                         "Action": "secretsmanager:GetSecretValue",
-                        "Resource": "${var.secrets-manager}"
+                        "Resource": "${var.secret-arn}"
                 },
         {
                         "Effect": "Allow",
@@ -54,7 +54,7 @@ resource "aws_iam_policy" "lambda-sender-authorizer" {
 }
 
 resource "aws_iam_policy" "lambda-manipulator" {
-  name                      = "lambda-manipulator-policy"
+  name                      = "${var.manipulator-fun-name}-policy"
   policy                    = jsonencode(
 {
         "Version": "2012-10-17",

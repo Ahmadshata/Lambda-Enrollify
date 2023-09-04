@@ -42,12 +42,12 @@ resource "aws_lambda_function" "manipulator" {
 
   source_code_hash              = data.archive_file.manipulator.output_base64sha256
 
-  runtime                       = "python3.10"
+  runtime                       = var.function-runtime
 }
 
 resource "aws_cloudwatch_log_group" "manipulator-log" {
   name                          = "/aws/lambda/${var.manipulator-fun-name}"
-  retention_in_days             = 14
+  retention_in_days             = var.CW-logs-retention-days
 }
 
 resource "aws_lambda_permission" "manipulator_permission" {
@@ -101,12 +101,12 @@ resource "aws_lambda_function" "auth" {
   handler                       = "${var.auth-fun-name}.lambda_handler"
 #Used to trigger updates if the file SHA changed. Must be set to a base64-encoded SHA256 hash of the package file.
   source_code_hash              = data.archive_file.auth.output_base64sha256
-  runtime                       = "python3.10"
+  runtime                       = var.function-runtime
 }
 
 resource "aws_cloudwatch_log_group" "auth-log" {
   name                          = "/aws/lambda/${var.auth-fun-name}"
-  retention_in_days             = 14
+  retention_in_days             = var.CW-logs-retention-days
 }
 
 resource "aws_lambda_permission" "sender_permission" {
@@ -200,12 +200,12 @@ resource "aws_lambda_function" "sender" {
 
   source_code_hash = data.archive_file.sender.output_base64sha256
 
-  runtime                     = "python3.10"
+  runtime                     = var.function-runtime
   layers                      = [aws_lambda_layer_version.sendgrid-lambda-layer.arn]
 }
 
 resource "aws_cloudwatch_log_group" "sender-log" {
   name                        = "/aws/lambda/${var.sender-fun-name}"
-  retention_in_days           = 14
+  retention_in_days           = var.CW-logs-retention-days
 }
 
