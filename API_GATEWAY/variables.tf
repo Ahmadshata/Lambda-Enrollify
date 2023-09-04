@@ -3,7 +3,7 @@ variable "api-name" {
 }
 
 variable "api-type" {
-  type = string
+  type = list(string)
 }
 
 variable "resource-name" {
@@ -21,7 +21,6 @@ variable "stage-name" {
 variable "custom-domain-name" {
   type = string
 }
-
 
 variable "evaluate-target-health" {
   type = bool
