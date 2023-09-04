@@ -17,6 +17,7 @@ resource "aws_api_gateway_method" "enrollment-method" {
   http_method                       = "POST"
   authorization                     = "CUSTOM" 
   authorizer_id                     = aws_api_gateway_authorizer.api-auth.id
+  api_key_required                  = true
 }
 
 resource "aws_api_gateway_authorizer" "api-auth" {
@@ -51,6 +52,30 @@ resource "aws_api_gateway_stage" "enrollment-stage" {
   deployment_id                     = aws_api_gateway_deployment.api-deployment.id
   rest_api_id                       = aws_api_gateway_rest_api.enrollment-api.id
   stage_name                        = var.stage-name
+}
+
+resource "aws_api_gateway_usage_plan" "enrollment-usageplan" {
+  name = "enrollment-usage-plan"
+
+  api_stages {
+    api_id = aws_api_gateway_rest_api.enrollment-api.id
+    stage  = aws_api_gateway_stage.enrollment-stage.stage_name
+  }
+  
+   throttle_settings {
+    burst_limit = 5
+    rate_limit  = 10
+  }
+}
+
+resource "aws_api_gateway_api_key" "enrollment-key" {
+  name = "enrollment-key"
+}
+
+resource "aws_api_gateway_usage_plan_key" "main" {
+  key_id        = aws_api_gateway_api_key.enrollment-key.id
+  key_type      = "API_KEY"
+  usage_plan_id = aws_api_gateway_usage_plan.enrollment-usageplan.id
 }
 
 resource "aws_api_gateway_domain_name" "custom-domain" {

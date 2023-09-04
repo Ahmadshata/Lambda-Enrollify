@@ -13,3 +13,7 @@ output "custom-domain-name" {
 output "resource-name" {
   value = aws_api_gateway_resource.enrollment-resource.path_part
 }
+
+output "api-key-value" {
+  value = aws_api_gateway_api_key.enrollment-key.value
+}
