@@ -4,3 +4,11 @@ variable "auth-fun-invoke-arn" {
 variable "manipulator-fun-invoke-arn" {
   type = string
 }
+
+variable "certificate-arn" {
+  type = string
+}
+
+variable "zone-id" {
+  type = string
+}

@@ -31,4 +31,6 @@ module "enrollment-api" {
     source                          = "./API_GATEWAY"
     auth-fun-invoke-arn             = module.lambda.auth-fun-invoke-arn
     manipulator-fun-invoke-arn      = module.lambda.manipulator-fun-invoke-arn
+    certificate-arn                 = module.acm.certificate-arn
+    zone-id                         = module.acm.zone-id
 }
