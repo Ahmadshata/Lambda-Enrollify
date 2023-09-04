@@ -1,6 +1,6 @@
 # Lambda-Enrollify
 
-![Lambda-Enrollify](https://github.com/Ahmadshata/Lambda-Enrollify/assets/124501795/e2cc6c25-31f1-4a3b-bcf5-f5ba4de051db)
+![Animated overview of the structure](https://github.com/Ahmadshata/Lambda-Enrollify/assets/124501795/ebd3bcfc-5170-4cc1-952d-7d566af9eede)
 
 This project utilizes Terraform to deploy an API Gateway with a CUSTOM authorizer. The authorizer, implemented as a Lambda function, is also deployed using Terraform. Here's how the process works:
 
