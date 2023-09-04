@@ -25,3 +25,19 @@ variable "db-arn" {
 variable "api-execution-arn" {
   type = string
 }
+
+variable "dynamodb-table-name" {
+  type = string
+}
+
+variable "secret-name" {
+  type = string
+}
+
+variable "sender-email" {
+  type = string
+}
+
+variable "receiver-email" {
+  type = string
+}

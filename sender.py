@@ -10,7 +10,6 @@ stored_secret = json.loads(secret_response['SecretString'])
 api_key = stored_secret["API_KEY"]
 
 def lambda_handler(event, context):
-    # TODO implement
     message = Mail(
         from_email='4ata12@gmail.com',
         to_emails='ahmadesmailshata@gmail.com',

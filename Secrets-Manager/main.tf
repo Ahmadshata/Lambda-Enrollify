@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "my-secret" {
-  name = "lambda-secrets"
+  name = var.secret-name
 }
 
 resource "aws_secretsmanager_secret_version" "my-secret" {
