@@ -21,3 +21,7 @@ variable "region" {
 variable "db-arn" {
   type = string
 }
+
+variable "api-execution-arn" {
+  type = string
+}

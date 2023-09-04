@@ -2,7 +2,7 @@ import json
 import boto3
 
 dynamo = boto3.resource('dynamodb')
-table = dynamo.Table('onboarding')
+table = dynamo.Table('enrollment')
 lambda_client = boto3.client('lambda')
 
 def lambda_handler(event, context):
@@ -10,7 +10,7 @@ def lambda_handler(event, context):
         requestBody = json.loads(event["body"])
         response=table.put_item(Item=requestBody)
         msg = {'id': requestBody['id'], 'first_name': requestBody['first name'], 'last_name': requestBody['last name']}
-        invoke_response = lambda_client.invoke(FunctionName="test-sendgrid", InvocationType='Event', Payload=json.dumps(msg))
+        invoke_response = lambda_client.invoke(FunctionName="Mail-sender", InvocationType='Event', Payload=json.dumps(msg))
 
         return {
             'statusCode': 200,
@@ -18,6 +18,3 @@ def lambda_handler(event, context):
     }
     except:
         raise
-    
-
-

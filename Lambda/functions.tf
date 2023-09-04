@@ -17,6 +17,22 @@ resource "aws_lambda_function" "manipulator" {
   runtime = "python3.10"
 }
 
+resource "aws_cloudwatch_log_group" "manipulator-log" {
+  name              = "/aws/lambda/manipulator"
+  retention_in_days = 14
+}
+
+resource "aws_lambda_permission" "manipulator_permission" {
+  statement_id  = "AllowMyAPIInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.manipulator-fun-name
+  principal     = "apigateway.amazonaws.com"
+
+  # The /* part allows invocation from any stage, method and resource path
+  # within API Gateway.
+  source_arn = "${var.api-execution-arn}/*/*"
+}
+
 #Api-gateway auth function
 data "archive_file" "auth" {
   type        = "zip"
@@ -33,6 +49,22 @@ resource "aws_lambda_function" "auth" {
   source_code_hash = data.archive_file.auth.output_base64sha256
 
   runtime = "python3.10"
+}
+
+resource "aws_cloudwatch_log_group" "auth-log" {
+  name              = "/aws/lambda/authenticator"
+  retention_in_days = 14
+}
+
+resource "aws_lambda_permission" "sender_permission" {
+  statement_id  = "AllowMyAPIInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.auth-fun-name
+  principal     = "apigateway.amazonaws.com"
+
+  # The /* part allows invocation from any stage, method and resource path
+  # within API Gateway.
+  source_arn = "${var.api-execution-arn}/*/*"
 }
 
 #Mail sending function
@@ -73,3 +105,9 @@ resource "aws_lambda_function" "sender" {
   runtime = "python3.10"
   layers = [aws_lambda_layer_version.sendgrid-lambda-layer.arn]
 }
+
+resource "aws_cloudwatch_log_group" "sender-log" {
+  name              = "/aws/lambda/Mail-sender"
+  retention_in_days = 14
+}
+

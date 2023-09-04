@@ -5,7 +5,7 @@ from sendgrid.helpers.mail import Mail
 import boto3
 
 client = boto3.client('secretsmanager')
-secret_response = client.get_secret_value(SecretId='JWT_TOKEN')
+secret_response = client.get_secret_value(SecretId='lambda-secrets')
 stored_secret = json.loads(secret_response['SecretString'])
 api_key = stored_secret["API_KEY"]
 

@@ -44,15 +44,11 @@ resource "aws_iam_policy" "lambda-sender-authorizer" {
                         "Effect": "Allow",
                         "Action": [
                                 "logs:CreateLogStream",
-                                "logs:PutLogEvents"
+                                "logs:PutLogEvents",
+                                "logs:CreateLogGroup"
                         ],
-                        "Resource": ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"]
+                        "Resource": ["arn:aws:logs:*:*:*"]
                 },
-                {
-                        "Effect": "Allow",
-                        "Action": "logs:CreateLogGroup",
-                        "Resource": "*"
-                }
         ]
 })
 }
@@ -79,14 +75,10 @@ resource "aws_iam_policy" "lambda-manipulator" {
                         "Effect": "Allow",
                         "Action": [
                                 "logs:CreateLogStream",
-                                "logs:PutLogEvents"
+                                "logs:PutLogEvents",
+                                "logs:CreateLogGroup"
                         ],
-                        "Resource": "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
-                },
-                {
-                        "Effect": "Allow",
-                        "Action": "logs:CreateLogGroup",
-                        "Resource": "*"
+                        "Resource": ["arn:aws:logs:*:*:*"]
                 },
                 {
                         "Effect": "Allow",
@@ -107,3 +99,4 @@ resource "aws_iam_role_policy_attachment" "manipulator-attach" {
   policy_arn = aws_iam_policy.lambda-manipulator.arn
   role = aws_iam_role.manipulator-role.name
 }
+
