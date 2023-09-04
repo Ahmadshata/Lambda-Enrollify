@@ -1,4 +1,4 @@
 variable "secrets" {
-  type = map(string)
+  type      = map(string)
   sensitive = true
 }

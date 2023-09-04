@@ -21,44 +21,44 @@ def lambda_handler(event, context):
     except:
         raise
   EOF
-  filename = "${var.manipulator-fun-name}.py"
+  filename                       ="${var.manipulator-fun-name}.py"
 }
 
 #Dynamodb manipulator function
 data "archive_file" "manipulator" {
-  type        = "zip"
-  source_file = "${var.manipulator-fun-name}.py"
-  output_path = "${var.manipulator-fun-name}.zip"
+  type                           = "zip"
+  source_file                    = "${var.manipulator-fun-name}.py"
+  output_path                    = "${var.manipulator-fun-name}.zip"
    depends_on = [
     local_file.manipulator
   ]
 }
 
 resource "aws_lambda_function" "manipulator" {
-  filename      = "${var.manipulator-fun-name}.zip"
-  function_name = var.manipulator-fun-name
-  role          = aws_iam_role.manipulator-role.arn
-  handler       = "${var.manipulator-fun-name}.lambda_handler"
+  filename                      = "${var.manipulator-fun-name}.zip"
+  function_name                 = var.manipulator-fun-name
+  role                          = aws_iam_role.manipulator-role.arn
+  handler                       = "${var.manipulator-fun-name}.lambda_handler"
 
-  source_code_hash = data.archive_file.manipulator.output_base64sha256
+  source_code_hash              = data.archive_file.manipulator.output_base64sha256
 
-  runtime = "python3.10"
+  runtime                       = "python3.10"
 }
 
 resource "aws_cloudwatch_log_group" "manipulator-log" {
-  name              = "/aws/lambda/${var.manipulator-fun-name}"
-  retention_in_days = 14
+  name                          = "/aws/lambda/${var.manipulator-fun-name}"
+  retention_in_days             = 14
 }
 
 resource "aws_lambda_permission" "manipulator_permission" {
-  statement_id  = "AllowMyAPIInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.manipulator-fun-name
-  principal     = "apigateway.amazonaws.com"
+  statement_id                  = "AllowMyAPIInvoke"
+  action                        = "lambda:InvokeFunction"
+  function_name                 = var.manipulator-fun-name
+  principal                     = "apigateway.amazonaws.com"
 
   # The /* part allows invocation from any stage, method and resource path
   # within API Gateway.
-  source_arn = "${var.api-execution-arn}/*/*"
+  source_arn                    = "${var.api-execution-arn}/*/*"
 }
 
 #Api-gateway auth function
@@ -82,39 +82,39 @@ def lambda_handler(event, context):
     authResponse = { "principalId": "1", "policyDocument": { "Version": "2012-10-17", "Statement": [{"Action": "execute-api:Invoke", "Resource": ["arn:aws:execute-api:eu-west-2:253823388836:*/*/*"], "Effect": auth}] }}
     return authResponse
   EOF
-  filename = "${var.auth-fun-name}.py"
+  filename                      = "${var.auth-fun-name}.py"
 }
 
 data "archive_file" "auth" {
-  type        = "zip"
-  source_file = "${var.auth-fun-name}.py"
-  output_path = "${var.auth-fun-name}.zip"
+  type                          = "zip"
+  source_file                   = "${var.auth-fun-name}.py"
+  output_path                   = "${var.auth-fun-name}.zip"
    depends_on = [
     local_file.auth
   ]
 }
 
 resource "aws_lambda_function" "auth" {
-  filename      = "${var.auth-fun-name}.zip"
-  function_name = var.auth-fun-name
-  role          = aws_iam_role.sender-auth-role.arn
-  handler       = "${var.auth-fun-name}.lambda_handler"
+  filename                      = "${var.auth-fun-name}.zip"
+  function_name                 = var.auth-fun-name
+  role                          = aws_iam_role.sender-auth-role.arn
+  handler                       = "${var.auth-fun-name}.lambda_handler"
 #Used to trigger updates if the file SHA changed. Must be set to a base64-encoded SHA256 hash of the package file.
-  source_code_hash = data.archive_file.auth.output_base64sha256
-  runtime = "python3.10"
+  source_code_hash              = data.archive_file.auth.output_base64sha256
+  runtime                       = "python3.10"
 }
 
 resource "aws_cloudwatch_log_group" "auth-log" {
-  name              = "/aws/lambda/${var.auth-fun-name}"
-  retention_in_days = 14
+  name                          = "/aws/lambda/${var.auth-fun-name}"
+  retention_in_days             = 14
 }
 
 resource "aws_lambda_permission" "sender_permission" {
-  statement_id  = "AllowMyAPIInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = var.auth-fun-name
-  principal     = "apigateway.amazonaws.com"
-  source_arn = "${var.api-execution-arn}/*/*"
+  statement_id                  = "AllowMyAPIInvoke"
+  action                        = "lambda:InvokeFunction"
+  function_name                 = var.auth-fun-name
+  principal                     = "apigateway.amazonaws.com"
+  source_arn                    = "${var.api-execution-arn}/*/*"
 }
 
 #Mail sending function
@@ -161,12 +161,12 @@ def lambda_handler(event, context):
     except Exception as e:
         print(e)
   EOF
-  filename = "${var.sender-fun-name}.py"
+  filename                    = "${var.sender-fun-name}.py"
 }
 data "archive_file" "sender" {
-  type        = "zip"
-  source_file = "${var.sender-fun-name}.py"
-  output_path = "${var.sender-fun-name}.zip"
+  type                        = "zip"
+  source_file                 = "${var.sender-fun-name}.py"
+  output_path                 = "${var.sender-fun-name}.zip"
    depends_on = [
     local_file.sender
   ]
@@ -174,38 +174,38 @@ data "archive_file" "sender" {
 
 #Creating a s3 bucket to conatin the layer zip file.
 resource "aws_s3_bucket" "auth-layer-bucket" {
-  bucket = "shata-lambda-auth-layer"
+  bucket                      = "shata-lambda-auth-layer"
 }
 
 #Putting the layer zip file in the bucket.
 resource "aws_s3_object" "lambda-layer-zip" {
-  bucket     = aws_s3_bucket.auth-layer-bucket.id
-  key        = "lambda_layers/sendgrid-layer"
-  source     = "sendgrid.zip"
+  bucket                      = aws_s3_bucket.auth-layer-bucket.id
+  key                         = "lambda_layers/sendgrid-layer"
+  source                      = "sendgrid.zip"
 }
 
 #Creating a layer out of the zip file.
 resource "aws_lambda_layer_version" "sendgrid-lambda-layer" {
-  s3_bucket           = aws_s3_bucket.auth-layer-bucket.id
-  s3_key              = aws_s3_object.lambda-layer-zip.key
-  layer_name          = "sendgrid"
-  compatible_runtimes = ["python3.10"]
+  s3_bucket                   = aws_s3_bucket.auth-layer-bucket.id
+  s3_key                      = aws_s3_object.lambda-layer-zip.key
+  layer_name                  = "sendgrid"
+  compatible_runtimes         = ["python3.10"]
 }
 
 resource "aws_lambda_function" "sender" {
-  filename      = "${var.sender-fun-name}.zip"
-  function_name =  var.sender-fun-name
-  role          = aws_iam_role.sender-auth-role.arn
-  handler       = "${var.sender-fun-name}.lambda_handler"
+  filename                    = "${var.sender-fun-name}.zip"
+  function_name               =  var.sender-fun-name
+  role                        = aws_iam_role.sender-auth-role.arn
+  handler                     = "${var.sender-fun-name}.lambda_handler"
 
   source_code_hash = data.archive_file.sender.output_base64sha256
 
-  runtime = "python3.10"
-  layers = [aws_lambda_layer_version.sendgrid-lambda-layer.arn]
+  runtime                     = "python3.10"
+  layers                      = [aws_lambda_layer_version.sendgrid-lambda-layer.arn]
 }
 
 resource "aws_cloudwatch_log_group" "sender-log" {
-  name              = "/aws/lambda/${var.sender-fun-name}"
-  retention_in_days = 14
+  name                        = "/aws/lambda/${var.sender-fun-name}"
+  retention_in_days           = 14
 }
 

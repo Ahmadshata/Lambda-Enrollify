@@ -1,8 +1,8 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "sender-auth-role" {
-  name = "sender-auth-role"
-  assume_role_policy = jsonencode({
+  name                    = "sender-auth-role"
+  assume_role_policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Action = "sts:AssumeRole"
@@ -15,8 +15,8 @@ resource "aws_iam_role" "sender-auth-role" {
 }
 
 resource "aws_iam_role" "manipulator-role" {
-  name = "manipulator-role"
-  assume_role_policy = jsonencode({
+  name                    = "manipulator-role"
+  assume_role_policy      = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Action = "sts:AssumeRole"
@@ -29,8 +29,8 @@ resource "aws_iam_role" "manipulator-role" {
 }
 
 resource "aws_iam_policy" "lambda-sender-authorizer" {
-  name        = "lambda-sender-authorizer-policy"
-  policy = jsonencode(
+  name                    = "lambda-sender-authorizer-policy"
+  policy                  = jsonencode(
         {
         "Version": "2012-10-17",
         "Statement": [
@@ -54,8 +54,8 @@ resource "aws_iam_policy" "lambda-sender-authorizer" {
 }
 
 resource "aws_iam_policy" "lambda-manipulator" {
-  name        = "lambda-manipulator-policy"
-  policy = jsonencode(
+  name                      = "lambda-manipulator-policy"
+  policy                    = jsonencode(
 {
         "Version": "2012-10-17",
         "Statement": [{
@@ -91,12 +91,12 @@ resource "aws_iam_policy" "lambda-manipulator" {
 }
 
 resource "aws_iam_role_policy_attachment" "sender-authorizer-attach" {
-  policy_arn = aws_iam_policy.lambda-sender-authorizer.arn
-  role = aws_iam_role.sender-auth-role.name
+  policy_arn                  = aws_iam_policy.lambda-sender-authorizer.arn
+  role                        = aws_iam_role.sender-auth-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "manipulator-attach" {
-  policy_arn = aws_iam_policy.lambda-manipulator.arn
-  role = aws_iam_role.manipulator-role.name
+  policy_arn                  = aws_iam_policy.lambda-manipulator.arn
+  role                        = aws_iam_role.manipulator-role.name
 }
 
